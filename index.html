@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What is a Database? | Interactive SQL & Data Storage Visualizer</title>
+  <meta name="description" content="Visual animated guide explaining what a database is, how data is stored and retrieved in modern applications, with SQL table creation, row insertion, and query filtering.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Navigation Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>Database Architecture & SQL Visualizer</h1>
+          <span class="brand-badge">Interactive Tutorial & Video Guide</span>
+        </div>
+      </div>
+
+      <!-- Quick mode selector -->
+      <div class="header-actions">
+        <div class="view-tabs">
+          <button id="btn-tab-video" class="tab-btn active" onclick="switchView('video')">
+            <span class="tab-icon">▶</span> Video Player Mode
+          </button>
+          <button id="btn-tab-interactive" class="tab-btn" onclick="switchView('interactive')">
+            <span class="tab-icon">⚡</span> Step-by-Step Lab
+          </button>
+          <button id="btn-tab-architecture" class="tab-btn" onclick="switchView('architecture')">
+            <span class="tab-icon">🌐</span> App Data Flow
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      
+      <!-- VIEW 1: VIDEO PLAYER MODE -->
+      <section id="view-video" class="view-panel active">
+        <div class="video-stage-wrapper">
+          <div class="stage-header">
+            <div class="stage-title-wrap">
+              <span class="step-indicator" id="video-step-badge">STEP 1 OF 4</span>
+              <h2 id="video-scene-title" class="scene-title">What is a Database & Application Data Flow</h2>
+            </div>
+            <div class="playback-controls">
+              <button id="btn-prev-scene" class="ctrl-btn" title="Previous Step">⏮ Prev</button>
+              <button id="btn-play-pause" class="ctrl-btn primary" title="Play / Pause Auto-Tour">
+                <span id="play-icon">▶</span> <span id="play-text">Auto-Play Tour</span>
+              </button>
+              <button id="btn-next-scene" class="ctrl-btn" title="Next Step">Next ⏭</button>
+              <button id="btn-sound-toggle" class="ctrl-btn icon-only" title="Toggle Audio Sound Effects">🔊</button>
+              <button id="btn-restart" class="ctrl-btn secondary" title="Restart Video">↺ Reset</button>
+            </div>
+          </div>
+
+          <!-- Video Canvas / Visualizer Screen -->
+          <div class="visualizer-screen" id="visualizer-screen">
+            <!-- Screen 1: Architecture Intro -->
+            <div id="scene-intro" class="scene active">
+              <div class="intro-grid">
+                <div class="intro-card glow-cyan">
+                  <div class="card-icon-bubble">📁 vs 🗄️</div>
+                  <h3>Why Applications Need Databases</h3>
+                  <ul class="feature-checklist">
+                    <li><strong>Persistence:</strong> Data remains intact when the app closes or crashes.</li>
+                    <li><strong>ACID Guarantees:</strong> Prevents corrupted or partial transactions.</li>
+                    <li><strong>Instant Lookups:</strong> B-Tree indexes search millions of rows in milliseconds.</li>
+                    <li><strong>Concurrency:</strong> Thousands of users can read and write simultaneously.</li>
+                  </ul>
+                </div>
+                <div class="intro-card glow-purple">
+                  <div class="card-icon-bubble">🔄</div>
+                  <h3>End-to-End Application Data Flow</h3>
+                  <div class="flow-mini-diagram">
+                    <div class="flow-node">
+                      <span class="node-title">1. Client UI</span>
+                      <span class="node-sub">User clicks "Sales Team"</span>
+                    </div>
+                    <div class="flow-arrow">➔</div>
+                    <div class="flow-node">
+                      <span class="node-title">2. API Server</span>
+                      <span class="node-sub">Prepares SQL Query</span>
+                    </div>
+                    <div class="flow-arrow">➔</div>
+                    <div class="flow-node highlight">
+                      <span class="node-title">3. Database Engine</span>
+                      <span class="node-sub">Executes & Filters</span>
+                    </div>
+                    <div class="flow-arrow">➔</div>
+                    <div class="flow-node">
+                      <span class="node-title">4. Disk / WAL</span>
+                      <span class="node-sub">B-Tree Pages on Disk</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Screen 2: CREATE TABLE Schema -->
+            <div id="scene-create" class="scene">
+              <div class="scene-split-grid">
+                <div class="code-column">
+                  <div class="code-window">
+                    <div class="window-dots">
+                      <span class="dot red"></span>
+                      <span class="dot yellow"></span>
+                      <span class="dot green"></span>
+                      <span class="window-title">schema.sql</span>
+                    </div>
+                    <pre class="code-box"><code><span class="kwd">CREATE TABLE</span> <span class="tbl">EMPLOYEE</span> (
+  <span class="col">empId</span> <span class="typ">INTEGER</span> <span class="cnst">PRIMARY KEY</span>,
+  <span class="col">name</span>  <span class="typ">TEXT</span>    <span class="cnst">NOT NULL</span>,
+  <span class="col">dept</span>  <span class="typ">TEXT</span>    <span class="cnst">NOT NULL</span>
+);</code></pre>
+                  </div>
+                  <div class="meta-callout">
+                    <div class="meta-badge">Primary Key Rule</div>
+                    <p><code>empId</code> uniquely distinguishes each row and builds an automatic search index. No duplicate or null IDs are permitted.</p>
+                  </div>
+                </div>
+                <div class="visual-column">
+                  <div class="blueprint-container">
+                    <div class="blueprint-header">Table Schema Structure Initialized</div>
+                    <div class="blueprint-columns">
+                      <div class="col-blueprint active" id="bp-col-1">
+                        <div class="bp-top">empId</div>
+                        <div class="bp-type">INTEGER</div>
+                        <div class="bp-badge pk">PRIMARY KEY</div>
+                        <div class="bp-desc">Unique identifier</div>
+                      </div>
+                      <div class="col-blueprint active" id="bp-col-2">
+                        <div class="bp-top">name</div>
+                        <div class="bp-type">TEXT</div>
+                        <div class="bp-badge not-null">NOT NULL</div>
+                        <div class="bp-desc">Full name required</div>
+                      </div>
+                      <div class="col-blueprint active" id="bp-col-3">
+                        <div class="bp-top">dept</div>
+                        <div class="bp-type">TEXT</div>
+                        <div class="bp-badge not-null">NOT NULL</div>
+                        <div class="bp-desc">Department required</div>
+                      </div>
+                    </div>
+                    <div class="db-status-bar success">
+                      <span class="status-icon">✓</span> Database table 'EMPLOYEE' created in memory/disk. 0 rows currently stored.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Screen 3: INSERT INTO (Data Storage) -->
+            <div id="scene-insert" class="scene">
+              <div class="scene-split-grid">
+                <div class="code-column">
+                  <div class="code-window">
+                    <div class="window-dots">
+                      <span class="dot red"></span>
+                      <span class="dot yellow"></span>
+                      <span class="dot green"></span>
+                      <span class="window-title">insert.sql</span>
+                    </div>
+                    <pre class="code-box"><code><span class="cmt">-- 1. Insert Clark</span>
+<span class="kwd">INSERT INTO</span> <span class="tbl">EMPLOYEE</span> <span class="kwd">VALUES</span> (<span class="num">0001</span>, <span class="str">'Clark'</span>, <span class="str">'Sales'</span>);
+
+<span class="cmt">-- 2. Insert Dave</span>
+<span class="kwd">INSERT INTO</span> <span class="tbl">EMPLOYEE</span> <span class="kwd">VALUES</span> (<span class="num">0002</span>, <span class="str">'Dave'</span>, <span class="str">'Accounting'</span>);
+
+<span class="cmt">-- 3. Insert Ava</span>
+<span class="kwd">INSERT INTO</span> <span class="tbl">EMPLOYEE</span> <span class="kwd">VALUES</span> (<span class="num">0003</span>, <span class="str">'Ava'</span>, <span class="str">'Sales'</span>);</code></pre>
+                  </div>
+                  <div class="meta-callout">
+                    <div class="meta-badge">Storage Engine Action</div>
+                    <p>Each <code>INSERT</code> writes a binary record tuple into the table storage page on disk and updates the primary key B-Tree index.</p>
+                  </div>
+                </div>
+                <div class="visual-column">
+                  <div class="table-storage-viewer">
+                    <div class="storage-title">
+                      <span>Database Table: <code>EMPLOYEE</code> (Active Storage)</span>
+                      <span class="badge-count" id="storage-row-count">3 Records Stored</span>
+                    </div>
+                    <table class="db-table" id="table-insert-demo">
+                      <thead>
+                        <tr>
+                          <th>empId <span class="tag-pk">PK</span></th>
+                          <th>name</th>
+                          <th>dept</th>
+                          <th>Disk Address</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr id="row-clark" class="row-card inserted">
+                          <td><span class="code-chip">0001</span></td>
+                          <td><strong>Clark</strong></td>
+                          <td><span class="dept-pill sales">Sales</span></td>
+                          <td class="disk-addr">0x7F01 (Page #1)</td>
+                        </tr>
+                        <tr id="row-dave" class="row-card inserted">
+                          <td><span class="code-chip">0002</span></td>
+                          <td><strong>Dave</strong></td>
+                          <td><span class="dept-pill acct">Accounting</span></td>
+                          <td class="disk-addr">0x7F02 (Page #1)</td>
+                        </tr>
+                        <tr id="row-ava" class="row-card inserted">
+                          <td><span class="code-chip">0003</span></td>
+                          <td><strong>Ava</strong></td>
+                          <td><span class="dept-pill sales">Sales</span></td>
+                          <td class="disk-addr">0x7F03 (Page #1)</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div class="db-status-bar success">
+                      <span class="status-icon">💾</span> ACID Write Confirmed: WAL Log flushed, all 3 rows committed to database storage.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Screen 4: SELECT WHERE dept = 'Sales' (Query & Retrieval) -->
+            <div id="scene-select" class="scene">
+              <div class="scene-split-grid">
+                <div class="code-column">
+                  <div class="code-window">
+                    <div class="window-dots">
+                      <span class="dot red"></span>
+                      <span class="dot yellow"></span>
+                      <span class="dot green"></span>
+                      <span class="window-title">query.sql</span>
+                    </div>
+                    <pre class="code-box"><code><span class="cmt">-- Fetch only Sales department</span>
+<span class="kwd">SELECT</span> * <span class="kwd">FROM</span> <span class="tbl">EMPLOYEE</span>
+<span class="kwd">WHERE</span> <span class="col">dept</span> = <span class="str">'Sales'</span>;</code></pre>
+                  </div>
+                  <div class="meta-callout">
+                    <div class="meta-badge">Execution Plan</div>
+                    <p>The query engine evaluates the predicate <code>dept = 'Sales'</code> against every row:</p>
+                    <ul class="predicate-list">
+                      <li>Clark (Sales): <strong class="text-match">dept == 'Sales' (TRUE)</strong> ✔</li>
+                      <li>Dave (Accounting): <strong class="text-filtered">dept != 'Sales' (FALSE)</strong> ✖</li>
+                      <li>Ava (Sales): <strong class="text-match">dept == 'Sales' (TRUE)</strong> ✔</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="visual-column">
+                  <div class="query-engine-viewer">
+                    <div class="engine-header">
+                      <span>Query Scan Evaluation (Filtering Predicate)</span>
+                      <span class="badge-filter">WHERE dept = 'Sales'</span>
+                    </div>
+                    
+                    <div class="table-scan-wrapper">
+                      <div class="scan-beam" id="scan-beam"></div>
+                      <table class="db-table" id="table-query-demo">
+                        <thead>
+                          <tr>
+                            <th>empId</th>
+                            <th>name</th>
+                            <th>dept</th>
+                            <th>Predicate Evaluation</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr class="eval-row match" id="eval-row-1">
+                            <td>0001</td>
+                            <td>Clark</td>
+                            <td><span class="dept-pill sales">Sales</span></td>
+                            <td class="eval-val match">dept == 'Sales' (TRUE)</td>
+                            <td><span class="eval-badge keep">✔ Include</span></td>
+                          </tr>
+                          <tr class="eval-row filtered" id="eval-row-2">
+                            <td>0002</td>
+                            <td>Dave</td>
+                            <td><span class="dept-pill acct">Accounting</span></td>
+                            <td class="eval-val filtered">dept == 'Accounting' (FALSE)</td>
+                            <td><span class="eval-badge discard">✖ Discard</span></td>
+                          </tr>
+                          <tr class="eval-row match" id="eval-row-3">
+                            <td>0003</td>
+                            <td>Ava</td>
+                            <td><span class="dept-pill sales">Sales</span></td>
+                            <td class="eval-val match">dept == 'Sales' (TRUE)</td>
+                            <td><span class="eval-badge keep">✔ Include</span></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <!-- Final Result Set Box -->
+                    <div class="result-set-box">
+                      <div class="result-header">
+                        <span class="res-title">Returned Result Set (2 Rows)</span>
+                        <span class="res-time">Execution Time: 0.14 ms</span>
+                      </div>
+                      <table class="final-res-table">
+                        <thead>
+                          <tr>
+                            <th>empId</th>
+                            <th>name</th>
+                            <th>dept</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>1</td>
+                            <td>Clark</td>
+                            <td>Sales</td>
+                          </tr>
+                          <tr>
+                            <td>3</td>
+                            <td>Ava</td>
+                            <td>Sales</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <div class="json-preview">
+                        <code>// Transmitted as JSON to client: [ {"empId":1,"name":"Clark","dept":"Sales"}, {"empId":3,"name":"Ava","dept":"Sales"} ]</code>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Video Progress Bar -->
+          <div class="timeline-bar-wrapper">
+            <div class="timeline-steps">
+              <div class="timeline-step active" onclick="jumpToScene(0)" id="t-step-0">
+                <span class="step-dot">1</span>
+                <span class="step-label">Overview & Concept</span>
+              </div>
+              <div class="timeline-step" onclick="jumpToScene(1)" id="t-step-1">
+                <span class="step-dot">2</span>
+                <span class="step-label">CREATE TABLE</span>
+              </div>
+              <div class="timeline-step" onclick="jumpToScene(2)" id="t-step-2">
+                <span class="step-dot">3</span>
+                <span class="step-label">INSERT INTO (Store)</span>
+              </div>
+              <div class="timeline-step" onclick="jumpToScene(3)" id="t-step-3">
+                <span class="step-dot">4</span>
+                <span class="step-label">SELECT WHERE (Retrieve)</span>
+              </div>
+            </div>
+            <div class="timeline-progress-track">
+              <div class="timeline-progress-fill" id="timeline-progress-fill"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 2: INTERACTIVE STEP-BY-STEP LAB -->
+      <section id="view-interactive" class="view-panel">
+        <div class="interactive-lab-container">
+          <div class="lab-sidebar">
+            <div class="sidebar-header">
+              <h3>SQL Query Playground</h3>
+              <p>Execute custom statements or click presets to test the in-browser database engine simulator.</p>
+            </div>
+            
+            <div class="query-presets">
+              <span class="preset-label">Query Presets:</span>
+              <button class="preset-chip" onclick="setQuery('SELECT * FROM EMPLOYEE;')">SELECT All</button>
+              <button class="preset-chip" onclick="setQuery('SELECT * FROM EMPLOYEE WHERE dept = \'Sales\';')">WHERE dept = 'Sales'</button>
+              <button class="preset-chip" onclick="setQuery('SELECT * FROM EMPLOYEE WHERE dept = \'Accounting\';')">WHERE dept = 'Accounting'</button>
+              <button class="preset-chip" onclick="setQuery('INSERT INTO EMPLOYEE VALUES (0004, \'Sarah\', \'Engineering\');')">INSERT Sarah</button>
+            </div>
+
+            <div class="editor-wrap">
+              <textarea id="sql-editor" rows="5" spellcheck="false">SELECT * FROM EMPLOYEE WHERE dept = 'Sales';</textarea>
+              <div class="editor-buttons">
+                <button id="btn-run-sql" class="run-btn" onclick="executeCustomSql()">▶ Run SQL Query</button>
+                <button class="clear-btn" onclick="resetDatabase()">↺ Reset DB</button>
+              </div>
+            </div>
+
+            <div class="console-box" id="sql-console">
+              <div class="console-header">Console Output:</div>
+              <div class="console-body" id="console-logs">SQLite simulator initialized. 3 rows ready in EMPLOYEE table.</div>
+            </div>
+          </div>
+
+          <div class="lab-viewport">
+            <div class="viewport-card">
+              <div class="viewport-title">
+                <h4>EMPLOYEE Table Live State</h4>
+                <span class="badge-count" id="lab-row-count">3 Rows</span>
+              </div>
+              <div class="lab-table-container">
+                <table class="db-table" id="lab-db-table">
+                  <thead>
+                    <tr>
+                      <th>empId (PK)</th>
+                      <th>name</th>
+                      <th>dept</th>
+                    </tr>
+                  </thead>
+                  <tbody id="lab-table-body">
+                    <!-- Populated via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="viewport-card">
+              <div class="viewport-title">
+                <h4>Query Results (Returned to Application)</h4>
+                <span class="badge-count" id="lab-res-count">0 Rows Returned</span>
+              </div>
+              <div class="lab-results-container" id="lab-results-view">
+                <div class="empty-state">Click "Run SQL Query" to inspect retrieved records.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 3: APPLICATION DATA FLOW -->
+      <section id="view-architecture" class="view-panel">
+        <div class="architecture-container">
+          <div class="arch-header">
+            <h2>How Applications Store and Retrieve Data</h2>
+            <p>From client UI interaction to persistent disk pages and back.</p>
+          </div>
+
+          <div class="architecture-diagram">
+            <div class="arch-card client">
+              <div class="arch-icon">💻</div>
+              <h3>1. Frontend Client</h3>
+              <p>User interacts with web, iOS, or Android app. E.g., clicking <em>"Filter by Sales"</em>.</p>
+              <div class="arch-tech">Fetch / Axios (HTTP GET /api/employees?dept=Sales)</div>
+            </div>
+
+            <div class="arch-arrow">➔</div>
+
+            <div class="arch-card server">
+              <div class="arch-icon">⚙️</div>
+              <h3>2. Backend API Server</h3>
+              <p>Node.js, Python FastAPI, or Java handles authentication, parameter validation, and connection pool.</p>
+              <div class="arch-tech">ORM / SQL Driver (pool.query)</div>
+            </div>
+
+            <div class="arch-arrow">➔</div>
+
+            <div class="arch-card db-engine">
+              <div class="arch-icon">🧠</div>
+              <h3>3. DBMS Query Engine</h3>
+              <p>Parser checks SQL syntax, Query Planner chooses optimal index scan, Execution Engine filters rows.</p>
+              <div class="arch-tech">B-Tree Index Scan & Predicate Match</div>
+            </div>
+
+            <div class="arch-arrow">➔</div>
+
+            <div class="arch-card storage">
+              <div class="arch-icon">💾</div>
+              <h3>4. Storage & WAL Disk</h3>
+              <p>Physical pages stored in non-volatile SSD/NVMe disk. Write-Ahead Log (WAL) ensures ACID durability.</p>
+              <div class="arch-tech">4KB Database Block Pages</div>
+            </div>
+          </div>
+
+          <!-- Deep-dive Comparison -->
+          <div class="comparison-grid">
+            <div class="comp-card">
+              <h4>Database Storage vs Flat Files (CSV / JSON)</h4>
+              <table class="comp-table">
+                <thead>
+                  <tr>
+                    <th>Capability</th>
+                    <th>Database (SQL)</th>
+                    <th>Flat File (CSV/Text)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Search Speed</td>
+                    <td><strong class="text-match">O(log N)</strong> via B-Tree Index</td>
+                    <td><strong class="text-filtered">O(N)</strong> Must read whole file</td>
+                  </tr>
+                  <tr>
+                    <td>Transactions</td>
+                    <td><strong class="text-match">ACID Guaranteed</strong></td>
+                    <td>None (Risk of partial writes)</td>
+                  </tr>
+                  <tr>
+                    <td>Concurrency</td>
+                    <td>Multi-reader, Multi-writer Locks</td>
+                    <td>File locking conflicts</td>
+                  </tr>
+                  <tr>
+                    <td>Constraints</td>
+                    <td>Enforces Primary Keys, Not Null</td>
+                    <td>No schema validation</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Bottom Footer -->
+    <footer class="app-footer">
+      <div class="footer-left">
+        <span>Generated for SQL EMPLOYEE Table Video Demonstration</span>
+      </div>
+      <div class="footer-right">
+        <span>SQLite 3 Engine Simulation • Antigravity AI</span>
+      </div>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
